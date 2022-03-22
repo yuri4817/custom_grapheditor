@@ -1,12 +1,14 @@
-def graphEditorFilterAttribute(attr, value):
+def graphEditorFilterAttributes(attrs, values):
+    if len(attrs) != len(values):
+        raise ValueError
+    
+    cmd = ''
     for editor in graphEditorOutlineEds():
-        if value == True:
-            mel.eval("filterUISelectAttributesCheckbox " + attr + " 1 " + editor + ";")
-        if value == False:
-            mel.eval("filterUISelectAttributesCheckbox " + attr + " 0 " + editor + ";")
+        for attr, value in zip(attrs, values):
+            cmd += 'filterUISelectAttributesCheckbox {} {:d} {};'.format(attr, value, editor)
+    mel.eval(cmd)         
+   
 
-        
-        
-graphEditorFilterAttribute("scaleZ",True)
 
+graphEditorFilterAttributes(['translateX', 'rotateZ', 'scaleY'], [True, False, False])
 
