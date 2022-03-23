@@ -44,47 +44,50 @@ class MainWindow(QMainWindow):
             for axis in ('X', 'Y', 'Z'): 
                 name = op + axis  
                 obj = getattr(self.ui, name)
-                # obj.toggled.connect(functools.partial(
-                #     graphEditorFilterAttribute,name))
+                # obj.toggled.connect(functools.partial(graphEditorFilterAttribute,name))
                 obj.toggled.connect(lambda value, name_ = name:graphEditorFilterAttributes([name_], [value]))
-        self.ui.visibility.toggled.connect(graphEditorFilterAttributes)
-    
+        
+        self.ui.visibility.toggled.connect(lambda value, name = 'visibility':graphEditorFilterAttributes(name, [value]))
         self.ui.translate.clicked.connect(lambda:self.togglebutton('translate'))
         self.ui.rotate.clicked.connect(lambda:self.togglebutton('rotate'))
         self.ui.scale.clicked.connect(lambda:self.togglebutton('scale'))
         
 
     def togglebutton(self, op):
-        bool_list = []
+        # bool_list = []
         # for op in ('translate',):
         #     # test = all((getattr(self.ui, op + axis).isChecked() for axis in ('X', 'Y', 'Z')))
         #     # #print(test)
+        # for axis in ('X', 'Y', 'Z'): 
+        #     name = op + axis  
+        #     obj = getattr(self.ui, name)
+        #     #print(obj)
+        #     obj.isChecked()
+        #     #print(obj.isChecked())
+            
+        #     bool_list.append(obj.isChecked())
+
+        value = not all((getattr(self.ui, op + axis).isChecked() for axis in ('X', 'Y', 'Z')))
         for axis in ('X', 'Y', 'Z'): 
             name = op + axis  
             obj = getattr(self.ui, name)
-            #print(obj)
-            obj.isChecked()
-            #print(obj.isChecked())
+            blocked = obj.blockSignals(True)
+            obj.setChecked(value)
+            obj.blockSignals(blocked)
+        
+        names = [op + 'X', op + 'Y', op + 'Z']
+        values = [value, value, value]
+        graphEditorFilterAttributes(names, values)
             
-            bool_list.append(obj.isChecked())
-
-        if  all(bool_list) == True:
-            for axis in ('X', 'Y', 'Z'): 
-                name = op + axis  
-                obj = getattr(self.ui, name)
-                obj.blockSignals(True)
-                obj.setChecked(False)
-            names = [op + 'X', op + 'Y', op + 'Z']
-            graphEditorFilterAttributes(names, [False,False,False])
-            
-        else:
-            for axis in ('X', 'Y', 'Z'): 
-                name = op + axis  
-                obj = getattr(self.ui, name)
-                obj.blockSignals(True)
-                obj.setChecked(True)
-            names = [op + 'X', op + 'Y', op + 'Z']
-            graphEditorFilterAttributes(names, [True,True,True])
+        
+        # for axis in ('X', 'Y', 'Z'): 
+        #     name = op + axis  
+        #     obj = getattr(self.ui, name)
+        #     blocked = obj.blockSignals(True)
+        #     obj.setChecked(True)
+        #     obj.blockSignals(blocked)
+        # names = [op + 'X', op + 'Y', op + 'Z']
+        # graphEditorFilterAttributes(names, [True,True,True])
 
 
 
