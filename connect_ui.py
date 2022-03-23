@@ -34,13 +34,11 @@ def graphEditorFilterAttributes(attrs, values):
             cmd += 'filterUISelectAttributesCheckbox {} {:d} {};'.format(attr, value, editor)
     mel.eval(cmd)  
 
-#graphEditorFilterAttributes(['translateX', 'rotateZ', 'scaleY'], [True, False, False])
-
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
-        self.ui = QUiLoader().load("D:\\graphEditorFilterAttributes.ui")
+        self.ui = QUiLoader().load("D:\\github\\CustomEditor\\graphEditorFilterAttributes.ui")
         self.setCentralWidget(self.ui)
         for op in ('translate', 'rotate', 'scale'):
             for axis in ('X', 'Y', 'Z'): 
@@ -50,60 +48,55 @@ class MainWindow(QMainWindow):
                 #     graphEditorFilterAttribute,name))
                 obj.toggled.connect(lambda value, name_ = name:graphEditorFilterAttributes([name_], [value]))
         self.ui.visibility.toggled.connect(graphEditorFilterAttributes)
-        #self.togglebutton()
-        self.ui.translate.clicked.connect(self.togglebutton)
-        #print(self.togglebutton)
+    
+        self.ui.translate.clicked.connect(lambda:self.togglebutton('translate'))
+        self.ui.rotate.clicked.connect(lambda:self.togglebutton('rotate'))
+        self.ui.scale.clicked.connect(lambda:self.togglebutton('scale'))
+        
 
-    def togglebutton(self):
+    def togglebutton(self, op):
         bool_list = []
-        for op in ('translate',):
-            # test = all((getattr(self.ui, op + axis).isChecked() for axis in ('X', 'Y', 'Z')))
-            # #print(test)
+        # for op in ('translate',):
+        #     # test = all((getattr(self.ui, op + axis).isChecked() for axis in ('X', 'Y', 'Z')))
+        #     # #print(test)
+        for axis in ('X', 'Y', 'Z'): 
+            name = op + axis  
+            obj = getattr(self.ui, name)
+            #print(obj)
+            obj.isChecked()
+            #print(obj.isChecked())
+            
+            bool_list.append(obj.isChecked())
+
+        if  all(bool_list) == True:
             for axis in ('X', 'Y', 'Z'): 
                 name = op + axis  
                 obj = getattr(self.ui, name)
-                #print(obj)
-                obj.isChecked()
-                #print(obj.isChecked())
-                #return "haichu"
-                bool_list.append(obj.isChecked())
-        if  all(bool_list) == True:
-            #print("pika")
-            
-            for op in ('translate',):
-                for axis in ('X', 'Y', 'Z'): 
-                    name = op + axis  
-                    obj = getattr(self.ui, name)
-                    #print(obj)
-                    obj.setChecked(False)
+                obj.blockSignals(True)
+                obj.setChecked(False)
+            names = [op + 'X', op + 'Y', op + 'Z']
+            graphEditorFilterAttributes(names, [False,False,False])
             
         else:
-            #print("raichu")
-            for op in ('translate',):
-                for axis in ('X', 'Y', 'Z'): 
-                    name = op + axis  
-                    obj = getattr(self.ui, name)
-                    obj.setChecked(True)
+            for axis in ('X', 'Y', 'Z'): 
+                name = op + axis  
+                obj = getattr(self.ui, name)
+                obj.blockSignals(True)
+                obj.setChecked(True)
+            names = [op + 'X', op + 'Y', op + 'Z']
+            graphEditorFilterAttributes(names, [True,True,True])
 
 
 
+#block signal
+#call function 
+#change checkbox
+#don't block signal
         
 
-        
-    
-    # def graphEditorFilterAttributes(self):
-    #     values = []
-    #     for op in ('translate', 'rotate', 'scale'):
-    #         for axis in ('X', 'Y', 'Z'): 
-    #             name = op + axis   
-    #             obj = getattr(self.ui, name)
-    #             values.append(obj.isChecked())
-    #     values.append(self.ui.visibility.isChecked())
-    #     graphEditorFilterAttributes(*values)
     
 
 window = MainWindow()
 window.show()
 
-#window.graphEditorFilterAttributes()
 
