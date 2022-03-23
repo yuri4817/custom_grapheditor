@@ -14,47 +14,23 @@ def graphEditorOutlineEds():
             continue
         outliner_editors.add(editor)
     return list(outliner_editors)
-
-
-
-
+    
+    
+    
 def graphEditorFilterAttributes(tx, ty, tz, rx, ry, rz, sx, sy, sz, v):
-    graph_outliner_editors = graphEditorOutlineEds()
+    cmd = ''
+    values = ((tx, ty, tz), (rx, ry, rz), (sx, sy, sz))
+    for editor in graphEditorOutlineEds():
+        for op, values_ in zip(('translate', 'rotate', 'scale'), values):
+            for axis, value in zip(('X', 'Y', 'Z'), values_):
+                cmd += 'filterUISelectAttributesCheckbox {}{} {:d} {};'.format(op, axis, value, editor)
+        cmd += 'filterUISelectAttributesCheckbox visibility {:d} {};'.format(v, editor)
+    mel.eval(cmd)
     
-    values = [[tx,ty,tz],[rx,ry,rz],[sx,sy,sz]]
-    attrs = [["translateX","translateY","translateZ"],["rotateX","rotateY","rotateZ"],["scaleX","scaleY","scaleZ"]]
-    v_val = v
     
-    for val, attr in zip(values,attrs):
-        for v, a in zip(val, attr):
-           if v == True:
-               a = ("filterUISelectAttributesCheckbox " + a + " 1 ")
-           if v == False:
-                a = ("filterUISelectAttributesCheckbox " + a + " 0 ")
-
-           for g in graph_outliner_editors:
-                 mel.eval(a + g + ";")
-                 
-                 mel.eval("filterUISelectAttributesCheckbox visibility 1 " + g + ";") 
-                 if v_val == False:
-                      mel.eval("filterUISelectAttributesCheckbox visibility 0 " + g + ";") 
     
-         
-        
-
 graphEditorFilterAttributes(
-True, False, False,
-False, False, False,
-False, False, False,
-False)
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    True, False, False,
+    False, True, False,
+    False, False, True,
+    True)
