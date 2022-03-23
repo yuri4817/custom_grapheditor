@@ -14,12 +14,12 @@ class MainWindow(QMainWindow):
             for axis in ('X', 'Y', 'Z'): 
                 name = op + axis  
                 obj = getattr(self.ui, name)
-                obj.toggled.connect(functools.partial(
-                    graphEditorFilterAttribute,name))
-                #obj.toggled.connect(lambda value, name_=name:graphEditorFilterAttribute(name_, value))
+                # obj.toggled.connect(functools.partial(
+                #     graphEditorFilterAttribute,name))
+                obj.toggled.connect(lambda value, name_ = name:graphEditorFilterAttributes([name_], [value]))
 
-                
-    #     self.ui.visibility.stateChanged.connect(graphEditorFilterAttribute)
+
+         self.ui.visibility.toggled.connect(graphEditorFilterAttribute)
  
     
     # def graphEditorFilterAttributes(self):
