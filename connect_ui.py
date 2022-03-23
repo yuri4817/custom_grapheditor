@@ -1,7 +1,15 @@
+import os
+import imp
+import inspect
+from maya import cmds
+from maya import mel
+from maya import OpenMayaUI
+from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2.QtUiTools import QUiLoader
+
 
 
 def graphEditorOutlineEds():
@@ -64,8 +72,128 @@ class MainWindow(QMainWindow):
         graphEditorFilterAttributes(names, values)
 
 
-window = MainWindow()
-window.show()
 
 
-#立ち上げた時に値の初期化　フィルタリングがされない状態になる　グラフエディタの初期化
+# Create UI of maya workspace
+
+# class MayaQWidgetDockable(MayaQWidgetDockableMixin, QWidget):
+#     def __init__(self, *args, **kwargs):
+#         super(MayaQWidgetDockable, self).__init__(*args, **kwargs)
+#         self.setObjectName(self.__class__.__name__)
+#         self.setAttribute(Qt.WA_DeleteOnClose)
+#         # self.setProperty('saveWindowPref', True)
+#     @property
+#     def name(self):
+#         return self.__class__.__name__ + 'WorkspaceControl'
+#     def show(self, **kwargs):
+#         mdl_name = inspect.getmodule(self).__name__
+#         cls_name = self.__class__.__name__
+#         pkg_name = mdl_name.split('.')[0]
+#         pkg_path = os.path.dirname(imp.find_module(pkg_name)[1])
+#         kwargs['uiScript'] = 'import sys; None if {!r} in sys.path else sys.path.append({!r}); import {}; {}.{}()._restore()'.format(
+#             pkg_path, pkg_path, mdl_name, mdl_name, cls_name)
+#         super(MayaQWidgetDockable, self).show(**kwargs)
+#         print(kwargs['uiScript'])
+#     @classmethod
+#     def delete(cls):
+#         name = cls.__name__ + 'WorkspaceControl'
+#         if cmds.workspaceControl(name, q=True, ex=True):
+#             cmds.workspaceControl(name, e=True, cl=True)
+#             try:
+#                 cmds.deleteUI(name, ctl=True)
+#             except RuntimeError:
+#                 pass
+#     def _restore(self):
+#         workspace_control = OpenMayaUI.MQtUtil.getCurrentParent()
+#         mixin_ptr = OpenMayaUI.MQtUtil.findControl(self.objectName())
+#         OpenMayaUI.MQtUtil.addWidgetToMayaLayout(long(mixin_ptr), long(workspace_control))
+
+from maya import cmds
+from maya import OpenMayaUI
+from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
+from PySide2.QtCore import *
+from PySide2.QtGui import *
+from PySide2.QtWidgets import *
+import shiboken2
+class MayaQWidgetDockable(MayaQWidgetDockableMixin, QWidget):
+    def __init__(self, *args, **kwargs):
+        super(MayaQWidgetDockable, self).__init__(*args, **kwargs)
+        self.setObjectName(self.__class__.__name__)
+        self.setAttribute(Qt.WA_DeleteOnClose)
+        # self.setProperty('saveWindowPref', True)
+    @property
+    def name(self):
+        return self.__class__.__name__ + 'WorkspaceControl'
+    def createMayaWidget(self):
+        pass
+    def show(self, **kwargs):
+        mdl_name = inspect.getmodule(self).__name__
+        cls_name = self.__class__.__name__
+        pkg_name = mdl_name.split('.')[0]
+        pkg_path = os.path.dirname(imp.find_module(pkg_name)[1])
+        kwargs['uiScript'] = 'import sys; None if {!r} in sys.path else sys.path.append({!r}); import {}; {}.{}()._restore()'.format(
+            pkg_path, pkg_path, mdl_name, mdl_name, cls_name)
+        ex = cmds.workspaceControl(self.name, q=True, ex=True)
+        super(MayaQWidgetDockable, self).show(**kwargs)
+        if ex:
+            return
+        layout = self.findChild(QLayout)
+        if layout is None:
+            layout = QVBoxLayout()
+            layout.setObjectName(self.__class__.__name__ + 'Layout')
+            layout.setContentsMargins(0, 0, 0, 0)
+            self.setLayout(layout)
+        parent = cmds.setParent(q=True)
+        if (layout is None) or (not layout.objectName()):
+            name = self.name
+        else:
+            ptr = shiboken2.getCppPointer(layout)
+            name = OpenMayaUI.MQtUtil.fullName(long(ptr[0]))
+        cmds.setParent(name)
+        self.createMayaWidget()
+        cmds.setParent(parent)
+    @classmethod
+    def delete(cls):
+        name = cls.__name__ + 'WorkspaceControl'
+        if cmds.workspaceControl(name, q=True, ex=True):
+            cmds.workspaceControl(name, e=True, cl=True)
+            try:
+                cmds.deleteUI(name, ctl=True)
+            except RuntimeError:
+                pass
+    def _restore(self):
+        workspace_control = OpenMayaUI.MQtUtil.getCurrentParent()
+        mixin_ptr = OpenMayaUI.MQtUtil.findControl(self.objectName())
+        OpenMayaUI.MQtUtil.addWidgetToMayaLayout(long(mixin_ptr), long(workspace_control))
+        layout = self.findChild(QLayout)
+        if layout is None:
+            layout = QVBoxLayout()
+            layout.setObjectName(self.__class__.__name__ + 'Layout')
+            layout.setContentsMargins(0, 0, 0, 0)
+            self.setLayout(layout)
+        if (layout is None) or (not layout.objectName()):
+            name = self.name
+        else:
+            ptr = shiboken2.getCppPointer(layout)
+            name = OpenMayaUI.MQtUtil.fullName(long(ptr[0]))
+        parent = cmds.setParent(q=True)
+        cmds.setParent(name)
+        self.createMayaWidget()
+        cmds.setParent(parent)
+
+
+class CustomGraphEditor(MayaQWidgetDockable):
+    def __init__(self, *args, **kwargs):
+        super(CustomGraphEditor, self).__init__(*args, **kwargs)
+        layout = QHBoxLayout()
+        layout.addWidget(MainWindow())
+        self.setLayout(layout)
+        self.setWindowTitle('CustomGraphEditor')
+
+def show():
+    CustomGraphEditor.delete()
+    CustomGraphEditor().show(dockable=True, restore=True, retain=False)
+if __name__ == '__main__':
+    show()
+
+
