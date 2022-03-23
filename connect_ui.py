@@ -2,7 +2,6 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2.QtUiTools import QUiLoader
-import functools
 
 
 def graphEditorOutlineEds():
@@ -34,39 +33,24 @@ def graphEditorFilterAttributes(attrs, values):
             cmd += 'filterUISelectAttributesCheckbox {} {:d} {};'.format(attr, value, editor)
     mel.eval(cmd)  
 
-
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
+        graphEditorFilterAttributes(['translateX','translateY','translateZ','rotateX','rotateY','rotateZ','scaleX','scaleY','scaleZ','visibility'], [False,False,False,False,False,False,False,False,False,False])
         self.ui = QUiLoader().load("D:\\github\\CustomEditor\\graphEditorFilterAttributes.ui")
         self.setCentralWidget(self.ui)
         for op in ('translate', 'rotate', 'scale'):
             for axis in ('X', 'Y', 'Z'): 
                 name = op + axis  
                 obj = getattr(self.ui, name)
-                # obj.toggled.connect(functools.partial(graphEditorFilterAttribute,name))
-                obj.toggled.connect(lambda value, name_ = name:graphEditorFilterAttributes([name_], [value]))
-        
-        self.ui.visibility.toggled.connect(lambda value, name = 'visibility':graphEditorFilterAttributes(name, [value]))
-        self.ui.translate.clicked.connect(lambda:self.togglebutton('translate'))
-        self.ui.rotate.clicked.connect(lambda:self.togglebutton('rotate'))
-        self.ui.scale.clicked.connect(lambda:self.togglebutton('scale'))
+                obj.toggled.connect(lambda value, name_=name: graphEditorFilterAttributes([name_], [value]))
+        self.ui.visibility.toggled.connect(lambda value: graphEditorFilterAttributes(['visibility'], [value]))
+        self.ui.translate.clicked.connect(lambda: self.togglebutton('translate'))
+        self.ui.rotate.clicked.connect(lambda: self.togglebutton('rotate'))
+        self.ui.scale.clicked.connect(lambda: self.togglebutton('scale'))
         
 
     def togglebutton(self, op):
-        # bool_list = []
-        # for op in ('translate',):
-        #     # test = all((getattr(self.ui, op + axis).isChecked() for axis in ('X', 'Y', 'Z')))
-        #     # #print(test)
-        # for axis in ('X', 'Y', 'Z'): 
-        #     name = op + axis  
-        #     obj = getattr(self.ui, name)
-        #     #print(obj)
-        #     obj.isChecked()
-        #     #print(obj.isChecked())
-            
-        #     bool_list.append(obj.isChecked())
-
         value = not all((getattr(self.ui, op + axis).isChecked() for axis in ('X', 'Y', 'Z')))
         for axis in ('X', 'Y', 'Z'): 
             name = op + axis  
@@ -78,28 +62,10 @@ class MainWindow(QMainWindow):
         names = [op + 'X', op + 'Y', op + 'Z']
         values = [value, value, value]
         graphEditorFilterAttributes(names, values)
-            
-        
-        # for axis in ('X', 'Y', 'Z'): 
-        #     name = op + axis  
-        #     obj = getattr(self.ui, name)
-        #     blocked = obj.blockSignals(True)
-        #     obj.setChecked(True)
-        #     obj.blockSignals(blocked)
-        # names = [op + 'X', op + 'Y', op + 'Z']
-        # graphEditorFilterAttributes(names, [True,True,True])
 
-
-
-#block signal
-#call function 
-#change checkbox
-#don't block signal
-        
-
-    
 
 window = MainWindow()
 window.show()
 
 
+#立ち上げた時に値の初期化　フィルタリングがされない状態になる　グラフエディタの初期化
