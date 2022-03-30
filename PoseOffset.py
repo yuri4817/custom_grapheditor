@@ -1,8 +1,3 @@
-#Create Offset Func
-#get to select all animation curve 
-#offset curve
-
-
 import maya.cmds as cmds
 
 #curve = cmds.listConnections(t='animCurve')
