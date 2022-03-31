@@ -17,7 +17,7 @@ for input_ in input_attrs:
     #keyフレームの値とチャンネルボックスの値が違うのだけプリント
     if key_val != ch_val:
         print(input_,key_val,ch_val)
-        diff_val = abs(key_val[0] - ch_val[0])
+        diff_val = ch_val[0] - key_val[0]
         #print(diff_val)
 
         #違う値の差分とどのアトリビュートかをだして、その値を使ってカーブをオフセット
