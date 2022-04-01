@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWIndow</string>
+   <string>PoseOffsetWindow</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="1">
@@ -48,7 +48,7 @@
     <widget class="QLineEdit" name="lineEdit_3"/>
    </item>
    <item row="0" column="1">
-    <widget class="QPushButton" name="PoseOffsetButton">
+    <widget class="QPushButton" name="poseoffset">
      <property name="text">
       <string>ポーズオフセット</string>
      </property>
