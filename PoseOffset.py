@@ -44,26 +44,9 @@ class MainWindow(QMainWindow):
     window.show()
 
 
-    #     for op in ('translate', 'rotate', 'scale'):
-    #         for axis in ('X', 'Y', 'Z'): 
-    #             name = op + axis  
-    #             obj = getattr(self.ui, name)
-    #             obj.toggled.connect(lambda value, name_=name: graphEditorFilterAttributes([name_], [value]))
-    #     self.ui.translate.clicked.connect(lambda: self.togglebutton('translate'))
+#wt-0 0,10
+#wt-1 4,8
 
-    
-
-    # def togglebutton(self, op):
-    #     value = not all((getattr(self.ui, op + axis).isChecked() for axis in ('X', 'Y', 'Z')))
-    #     for axis in ('X', 'Y', 'Z'): 
-    #         name = op + axis  
-    #         obj = getattr(self.ui, name)
-    #         blocked = obj.blockSignals(True)
-    #         obj.setChecked(value)
-    #         obj.blockSignals(blocked)
-        
-    #     names = [op + 'X', op + 'Y', op + 'Z']
-    #     values = [value, value, value]
-    #     graphEditorFilterAttributes(names, values)
-
-
+#wt
+#0-10の範囲のキーフレームの値を取得
+#4-8の範囲だけオフセット。それ以外の範囲は各キーフレーム値に対して掛け算していく？
