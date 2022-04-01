@@ -28,6 +28,7 @@ def poseOffset():
             cmds.keyframe(at=attr, o="move", r=True, vc=diff_val)
 
 
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
