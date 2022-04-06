@@ -1,5 +1,5 @@
 # -*- coding:utf-8 -*-
-from __future__ import absolute_import, division, print_function
+from __future__ import print_function, absolute_import, division
 
 import os
 import imp
@@ -28,10 +28,10 @@ class MayaQWidgetDockableMixin(_MayaQWidgetDockableMixin):
         pkg_path = os.path.dirname(imp.find_module(pkg_name)[1])
 
         if 'uiScript' in kwargs:
-            kwargs['uiScript'] += '; import sys; None if {!r} in sys.path else sys.path.append({!r}); import {}; {}.{}.restore()'.format(
+            kwargs['uiScript'] += "; None if {!r} in __import__('sys').path else __import__('sys').path.append({!r}); import {}; {}.{}.restore()".format(
                 pkg_path, pkg_path, mdl_name, mdl_name, cls_name)
         else:
-            kwargs['uiScript'] = 'import sys; None if {!r} in sys.path else sys.path.append({!r}); import {}; {}.{}.restore()'.format(
+            kwargs['uiScript'] = "None if {!r} in __import__('sys').path else __import__('sys').path.append({!r}); import {}; {}.{}.restore()".format(
                 pkg_path, pkg_path, mdl_name, mdl_name, cls_name)
         
         super(MayaQWidgetDockableMixin, self).show(**kwargs)
