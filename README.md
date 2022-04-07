@@ -28,7 +28,6 @@ https://www.haya-programming.com/entry/2019/03/04/135723
 https://srinikom.github.io/pyside-docs/PySide/QtGui/QAbstractButton.html#PySide.QtGui.PySide.QtGui.QAbstractButton.setChecked
 https://qiita.com/kenasman/items/b9ca3beb25ecf87bfb06
 
-### 
 
 
 ### Reverse Value
@@ -47,6 +46,11 @@ https://en.wikipedia.org/wiki/Observer_pattern
 design pattern
 https://qiita.com/i-tanaka730/items/c63c6c22abd1477e0ba0
 
+Python で文頭に記載する文字コードの「アレ」（なんちゃら UTF-8 みたいなやつ）の名称と仕様
+https://qiita.com/KEINOS/items/6efc1147b917d7811b5b
+
+5分で分かるガベージコレクションの仕組み
+https://geechs-job.com/tips/details/35
 
 
 
