@@ -4,22 +4,29 @@ from __future__ import print_function, absolute_import, division
 import os
 from maya import cmds
 from maya import mel
+from maya import OpenMaya
+from maya import OpenMayaUI
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 from PySide2.QtUiTools import QUiLoader
+import shiboken2
 
 
 class Widget(QWidget):
     def __init__(self, parent=None):
         super(Widget, self).__init__(parent)
-        self.ui = QUiLoader().load(os.path.splitext(__file__)[0] + ".ui")
+        self.ui = QUiLoader().load(os.path.splitext(__file__)[0] + "_v1" + ".ui")
         layout = QVBoxLayout()
         layout.setContentsMargins(0,0,0,0)
         layout.addWidget(self.ui)
         self.setLayout(layout)
 
         self.ui.poseoffset.clicked.connect(self.poseOffset)
+        gradctrl = cmds.gradientControlNoAttr()
+        ptr = OpenMayaUI.MQtUtil.findControl(gradctrl)
+        widget = shiboken2.wrapinstance(long(ptr), QWidget)
+        self.ui.gradientControlLayout.addWidget(widget)
 
     def poseOffset(self):
         curves_attrs = cmds.listConnections(t='animCurve', c=True, p=True, d=False)
