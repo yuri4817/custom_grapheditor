@@ -23,9 +23,9 @@ class Widget(QWidget):
         self.setLayout(layout)
 
         self.ui.poseoffset.clicked.connect(self.poseOffset)
-        gradctrl = cmds.gradientControlNoAttr()
-        ptr = OpenMayaUI.MQtUtil.findControl(gradctrl)
-        widget = shiboken2.wrapinstance(long(ptr), QWidget)
+        self.ui.gradctrl = cmds.gradientControlNoAttr(dc = self.dragCallback)
+        ptr = OpenMayaUI.MQtUtil.findControl(self.ui.gradctrl)
+        widget = shiboken2.wrapInstance(long(ptr), QWidget)
         self.ui.gradientControlLayout.addWidget(widget)
 
     def poseOffset(self):
@@ -45,5 +45,16 @@ class Widget(QWidget):
                 diff_val = ch_val - key_val
             
                 cmds.keyframe(at=attr, o="move", r=True, vc=diff_val)
-    
+
+
+    def dragCallback(self, *args):
+        _values = cmds.gradientControlNoAttr(self.ui.gradctrl, q=True, asString = True)
+        _values_list = _values.split(",")
+        key_index = cmds.gradientControlNoAttr(self.ui.gradctrl, q=True, ck=True)
+        # key_index -= 1  key_indexが１番開始ならいるかも
+        x_val = _values_list[3 * key_index + 1]
+        y_val = _values_list[3 * key_index + 0]
+        interp_val = _values_list[3 * key_index + 2]    
+
+
 

@@ -53,9 +53,6 @@ https://qiita.com/KEINOS/items/6efc1147b917d7811b5b
 https://geechs-job.com/tips/details/35
 
 
-# Create Weight Function
-
-
 
 
 
