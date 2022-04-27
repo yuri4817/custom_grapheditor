@@ -23,11 +23,17 @@ class Widget(QWidget):
         self.setLayout(layout)
 
         self.ui.poseoffset.clicked.connect(self.poseOffset)
+
         self.ui.gradctrl = cmds.gradientControlNoAttr(dc = self.dragCallback)
         ptr = OpenMayaUI.MQtUtil.findControl(self.ui.gradctrl)
         widget = shiboken2.wrapInstance(long(ptr), QWidget)
         self.ui.gradientControlLayout.addWidget(widget)
 
+        self.ui.lineEdit_x.textChanged.connect(self.changeTextValue)
+        self.ui.lineEdit_y.textChanged.connect(self.changeTextValue)
+
+
+        
     def poseOffset(self):
         curves_attrs = cmds.listConnections(t='animCurve', c=True, p=True, d=False)
         input_attrs = curves_attrs[0::2]
@@ -41,7 +47,7 @@ class Widget(QWidget):
             ch_val = cmds.getAttr(input_)
 
             if key_val != ch_val:
-                print(input_,key_val,ch_val)
+                #print(input_,key_val,ch_val)
                 diff_val = ch_val - key_val
             
                 cmds.keyframe(at=attr, o="move", r=True, vc=diff_val)
@@ -55,6 +61,18 @@ class Widget(QWidget):
         x_val = _values_list[3 * key_index + 1]
         y_val = _values_list[3 * key_index + 0]
         interp_val = _values_list[3 * key_index + 2]    
+        print(x_val,y_val,interp_val)
+
+    def changeTextValue(self, text):
+        # 押したときの動作
+        _value_lists = []
+        _value_lists.append(text)
+        print(_value_lists)
+
+
+    
+        
+        
 
 
 
