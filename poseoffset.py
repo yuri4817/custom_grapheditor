@@ -29,9 +29,11 @@ class Widget(QWidget):
         widget = shiboken2.wrapInstance(long(ptr), QWidget)
         self.ui.gradientControlLayout.addWidget(widget)
 
-        self.ui.lineEdit_x.textChanged.connect(self.dragCallback)
-        self.ui.lineEdit_y.textChanged.connect(self.dragCallback)
-        self.ui.comboBox.addItems(["Linear", "Test"])
+        # self.ui.lineEdit_x.textChanged.connect(self.dragCallback)
+        # self.ui.lineEdit_y.textChanged.connect(self.dragCallback)
+        self.ui.lineEdit_x.textChanged.connect(self.changeTextValue)
+        self.ui.lineEdit_y.textChanged.connect(self.changeTextValue)
+        self.ui.comboBox.addItems(["None","Linear","Smooth","Spline"])
 
 
         
@@ -62,18 +64,14 @@ class Widget(QWidget):
         x_val = _values_list[3 * key_index + 1]
         y_val = _values_list[3 * key_index + 0]
         interp_val = _values_list[3 * key_index + 2]    
-        print(x_val,y_val,interp_val)
-        self.lineEdit_x.setText("x_val")
-        self.lineEdit_y.setText("y_val")
+        #print(x_val,y_val,interp_val)
+        self.ui.lineEdit_x.setText(x_val)
+        self.ui.lineEdit_y.setText(y_val)
     
 
-
-
-
-
-
     def changeTextValue(self, text):
-        # 押したときの動作
-        _value_lists = []
-        # _value_lists.append(text)
+        # _value_lists = []
+        # _value_lists.append(float(text))
         # print(_value_lists)
+        cmds.gradientControlNoAttr(self.ui.gradctrl, e=True, cvv=text)
+        
