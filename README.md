@@ -1,8 +1,8 @@
 # CustomEditor
+This is a customized plugin for maya's This is a customized plugin for maya's graph editor.graph editor.
 
 
-
-## ref
+## Memo
 
 ### Basic
 https://qiita.com/Zuishin/items/8db3a93b503405d949d3
