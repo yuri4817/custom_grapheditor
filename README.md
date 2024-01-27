@@ -1,5 +1,5 @@
 # CustomEditor
-This is a customized plugin for maya's This is a customized plugin for maya's graph editor.graph editor.
+This is a customized plugin for maya's graph editor.graph editor.
 
 
 ## Memo
